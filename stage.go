@@ -6,8 +6,6 @@ import (
 )
 // Stager 
 type Stager interface {
-	MarshalJSON() ([]byte, error)
-	UnmarshalJSON([]byte) error
 	Execute(context.Context)
 }
 
@@ -24,11 +22,4 @@ func New() Stager {
 
 func (s *Script) Execute(ctx context.Context) {
 	log.Info("execute script, %s", s.Cmd)
-}
-
-func (s *Script) MarshalJSON() ([]byte, error) {
-	return []byte("testing..."), nil
-}
-func (s *Script) UnmarshalJSON([]byte) error {
-	return nil
 }
