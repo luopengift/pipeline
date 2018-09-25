@@ -2,24 +2,26 @@ package pipeline
 
 import (
 	"context"
-	"path"
 	"encoding/json"
+	"path"
+
 	"github.com/luopengift/gohttp"
-	"github.com/luopengift/log"
 	"github.com/luopengift/golibs/uuid"
+	"github.com/luopengift/log"
 )
 
 // PipeLine pipeline instance
 type PipeLine struct {
-	ID string				 `json:"id"`
-	Name string              `json:"name"`
-	Events string			 `json:"events"`
-	Labels map[string]string `json:"labels"`
-    Env  map[string]string   `json:"env"`
-	Stages []Stager			 `json:"stages"`
-	gohttp.BaseHTTPHandler	 `json:"-"`	
+	ID                     string            `json:"id"`
+	Name                   string            `json:"name"`
+	Events                 string            `json:"events"`
+	Labels                 map[string]string `json:"labels"`
+	Env                    map[string]string `json:"env"`
+	Stages                 []Stager          `json:"stages"`
+	gohttp.BaseHTTPHandler `json:"-"`
 }
 
+// NewPipeLine new pipeline
 func NewPipeLine() *PipeLine {
 	return &PipeLine{
 		ID: uuid.Rand().Hex(),
@@ -30,10 +32,12 @@ func NewPipeLine() *PipeLine {
 func (p *PipeLine) Copy() *PipeLine {
 	return nil
 }
+
 // Dump format pipeline
 func (p *PipeLine) Dump() {
 }
 
+// Run run
 func (p *PipeLine) Run(ctx context.Context) error {
 	for _, stage := range p.Stages {
 		stage.Execute(ctx)
@@ -41,11 +45,12 @@ func (p *PipeLine) Run(ctx context.Context) error {
 	return nil
 }
 
+// AddStage add stage
 func (p *PipeLine) AddStage(s Stager) {
-	p.Stages =  append(p.Stages, s)
+	p.Stages = append(p.Stages, s)
 }
 
-
+// GET method
 func (p *PipeLine) GET() {
 	//query := p.GetQueryArgs()
 }
@@ -59,7 +64,7 @@ func (p *PipeLine) POST() {
 	}
 	if err := store.Put(path.Join("pipeline", p.ID), p); err != nil {
 		log.Error("%v", err)
-		return 
+		return
 	}
 	log.Info("%s", p.ID)
 }
